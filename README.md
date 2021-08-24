@@ -60,7 +60,7 @@ https://pan.baidu.com/s/1NZ0UyAq5c_dno-N1pojSVA  code: kkkk
 
 ``cd dataset/ && unzip TrainSet.zip && unzip TrainLabel.zip``
 
-*Note: The dataset-08 is mal-formed. The label should be {0, 1} while {2} occured, and the volume of labeled data is abnomarlly laege. Pay attention to this one.*
+*Note: The dataset-08 is mal-formed. The label should be {0, 1} while {2} occured, and the volume of labeled data is abnomarlly large. Pay attention to this one.*
 
 The given best model can achieve mIoU: 0.8355 Acc: 0.9991 Kappa: 0.8040 ,Class IoU: [0.9991 0.6719], Class Acc: [0.9996 0.7973] on given dataset.
 
