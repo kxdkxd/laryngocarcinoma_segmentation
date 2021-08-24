@@ -47,6 +47,7 @@ mkdir dataset/srcs
 mkdir dataset/labels
 mkdir dataset/labels_show
 mkdir outputs
+mkdir results
 ```
 
 ### **Download dataset:**
@@ -63,8 +64,7 @@ https://pan.baidu.com/s/1NZ0UyAq5c_dno-N1pojSVA  code: kkkk
 
 The given best model can achieve mIoU: 0.8355 Acc: 0.9991 Kappa: 0.8040 ,Class IoU: [0.9991 0.6719], Class Acc: [0.9996 0.7973] on given dataset.
 
-
-**For Training and Validating**
+# Run Train & Validate
 ### **Preprocess dataset:**
 ``python preprocess_for_train.py``
 
@@ -80,8 +80,24 @@ test_data_size = int(len(data_list) * 0.1)
 
 ``python val.py --config OCRNet_W48.yml --model_path outputs/best_model/model.pdparams`` 
 
-**For Testing**
+# Run Test
 ### **Preprocess dataset:**
 ``python preprocess_for_test.py``
 
 ``python predict.py --config OCRNet_W48.yml --model_path output/best_model/model.pdparams --image_path dataset/srcs --save_dir results``
+
+The test result is also in 2D z-axis sliced. If you want to reformat them into NII format, try MATLAB **dicm2nii**. You can access this repo on github.
+```matlab
+clc; clear;
+files = dir('*.jpg')
+file_names = {files.name}
+num_of_files=numel(file_names);
+for i=1:num_of_files
+  nifti_mat(:,:,i)=imread(file_names{i});
+end
+nii = nii_tool('init', nifti_mat);
+nii_tool('save', nii, 'label90.nii'); %%% NUMBER %%%
+```
+
+# Appendix
+Since I only introduced 2D slice samples with a labeled tumor. The model may predict a tumor at a wrong part of a body, if you input a full-body-part CT Data, for example mistakenly predict a tumor in brain or bowel. These part should be carefully examine after finishing predict job. One method to remove these mistakes is open the **origin nii main image** in ITK-SNAP and compact these predicted 2D files into nii 3D files with **dicm2nii**, then import to ITK-SNAP as segmentation. Press Update Button on the left-down corner to observe 3D-Model. Then note the wrong z-axis slice number, then back to jpgs folders, replace the determinded number of slice with another absolute 0 label jpg. Then re-run the **dicm2nii** again to generate final NII result.
